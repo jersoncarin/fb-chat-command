@@ -50,12 +50,18 @@ const init = (option = {}) => {
           ) {
             const prefix = event.body.substring(0, 1);
 
+            if (command.option.name === undefined) {
+              console.log(`${chalk.red("Error: ")}No command name defined.`);
+              process.exit();
+            }
+
             if (command.option.command === undefined) {
-              return console.log(
+              console.log(
                 `${chalk.red(
                   "Error: "
                 )}No command defined, you should put atleast one command.`
               );
+              process.exit();
             }
 
             const commandPrefix =
@@ -77,7 +83,7 @@ const init = (option = {}) => {
     });
   } catch (err) {
     console.log(`${chalk.red("Error: ")}${err.message}`);
-    return;
+    process.exit();
   }
 };
 
