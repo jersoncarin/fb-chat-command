@@ -1,7 +1,7 @@
 {
   "name": "fb-chat-command",
   "version": "1.3.10",
-  "description": "A Facebook chat API that doesn't rely on XMPP.",
+  "description": "Unofficial Facebook Chat API for user-account (not page).",
   "repository": {
     "type": "git",
     "url": "git://github.com/jersoncarin/fb-chat-command.git"
@@ -12,8 +12,7 @@
   "keywords": [
     "facebook",
     "chat",
-    "api",
-    "fca"
+    "api"
   ],
   "bugs": {
     "url": "https://github.com/jersoncarin/fb-chat-command/issues"
