@@ -2,7 +2,7 @@ const chat = require("./chat");
 const fs = require("fs");
 const chalk = require("chalk");
 
-if (!fs.existsSync(`${__dirname}/state.session`)) {
+if (!fs.existsSync(`${process.cwd()}/state.session`)) {
   console.log(
     `${chalk.red(
       "Error: "
@@ -26,7 +26,7 @@ const init = (option = {}) => {
   try {
     const appState = JSON.parse(
       Buffer.from(
-        fs.readFileSync(`${__dirname}/state.session`, "utf-8"),
+        fs.readFileSync(`${process.cwd()}/state.session`, "utf-8"),
         "base64"
       )
     );
