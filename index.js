@@ -21,8 +21,8 @@ let options = {};
 const add = (callback, option) => commands.push({ callback, option });
 const list = () =>
   commands.map((command) => ({
-    ...command.option,
     prefix: options.prefix === undefined ? "/" : options.prefix,
+    ...command.option,
   }));
 
 const init = (option = {}) => {
