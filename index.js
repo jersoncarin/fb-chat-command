@@ -1,6 +1,7 @@
 const chat = require("./chat");
 const fs = require("fs");
 const chalk = require("chalk");
+const { multilineRegex } = require("./regex");
 
 if (!fs.existsSync(`${process.cwd()}/state.session`)) {
   console.log(
@@ -62,20 +63,13 @@ const init = (option = {}) => {
                 ? defaultPrefix
                 : command.option.prefix;
 
-            const bodyCommand = event.body.substring(
-              1,
-              command.option.command.length + 1
-            );
+            const bodyCommand = event.body.substring(1);
 
-            if (
-              commandPrefix === prefix &&
-              bodyCommand === command.option.command
-            ) {
-              const body = event.body
-                .substring(command.option.command.length + 1)
-                .trim();
+            const re = new RegExp(command.option.command, "gim");
+            const matches = multilineRegex(re, bodyCommand);
 
-              command.callback(body, event, fb);
+            if (commandPrefix === prefix && matches.length !== 0) {
+              command.callback(matches, event, fb);
             }
           }
         });
