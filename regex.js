@@ -18,4 +18,4 @@ const multilineRegex = (pattern, str) => {
   return matches;
 };
 
-module.exports = { escape, multilineRegex };
+module.exports = { multilineRegex };
