@@ -92,6 +92,7 @@ const init = (option = {}) => {
               command.callback(matches, event, fb, {
                 prefix: commandPrefix,
                 ...command.option,
+                commands: list(),
               });
             }
           }
