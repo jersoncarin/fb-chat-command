@@ -79,7 +79,10 @@ const init = (option = {}) => {
             const matches = multilineRegex(re, bodyCommand);
 
             if (commandPrefix === prefix && matches.length !== 0) {
-              command.callback(matches, event, fb, command);
+              command.callback(matches, event, fb, {
+                prefix: commandPrefix,
+                ...command.option,
+              });
             }
           }
         });
