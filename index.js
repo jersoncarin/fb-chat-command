@@ -2,6 +2,7 @@ const chat = require("./chat");
 const fs = require("fs");
 const chalk = require("chalk");
 const { multilineRegex } = require("./regex");
+const pipeline = require("./pipeline");
 
 if (!fs.existsSync(`${process.cwd()}/state.session`)) {
   console.log(
@@ -17,6 +18,11 @@ const selfListen = process.env.LISTEN_EVENT ? process.env.SELF_LISTEN : true;
 
 const commands = [];
 let options = {};
+var middlewares = [];
+
+const addMiddleware = (...middleware) => {
+  middlewares.push(...middleware);
+};
 
 const add = (callback, option) => commands.push({ callback, option });
 const list = () =>
@@ -89,7 +95,12 @@ const init = (option = {}) => {
               (commandPrefix === prefix && matches.length !== 0) ||
               handleMatches
             ) {
-              command.callback(matches, event, fb, {
+              const commandCallback = () => {
+                return async (matches, event, fb, option) => {
+                  return command.callback(matches, event, fb, option);
+                };
+              };
+              pipeline([...middlewares, commandCallback], matches, event, fb, {
                 prefix: commandPrefix,
                 ...command.option,
                 commands: list(),
@@ -113,4 +124,5 @@ module.exports = {
   add,
   init,
   list,
+  addMiddleware,
 };
