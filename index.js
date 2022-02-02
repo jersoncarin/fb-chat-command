@@ -38,6 +38,7 @@ const init = (option = {}) => {
 
     const fbOption = JSON.parse(JSON.stringify(options));
     delete fbOption["prefix"];
+    delete fbOption["handleMatches"];
 
     chat({ appState }, { listenEvents, selfListen, ...fbOption }, (err, fb) => {
       if (err) return console.log(`${chalk.red("Error: ")}${err}`);
@@ -77,8 +78,17 @@ const init = (option = {}) => {
 
             const re = new RegExp(command.option.command, "gim");
             const matches = multilineRegex(re, bodyCommand);
+            const handleMatches =
+              command.option.handleMatches === undefined
+                ? options.handleMatches === undefined
+                  ? false
+                  : options.handleMatches
+                : command.option.handleMatches;
 
-            if (commandPrefix === prefix && matches.length !== 0) {
+            if (
+              (commandPrefix === prefix && matches.length !== 0) ||
+              handleMatches
+            ) {
               command.callback(matches, event, fb, {
                 prefix: commandPrefix,
                 ...command.option,
