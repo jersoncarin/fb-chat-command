@@ -67,7 +67,11 @@ const init = (option = {}) => {
 
           const type = e.event;
 
-          if (event.type === type) {
+          if (
+            type
+              .split("|")
+              .map((e) => e.toLowerCase().trim().includes(event.type))
+          ) {
             pipeline([...eventMiddlewares, eventCallback], event, fb, {
               ...e.args,
             });
