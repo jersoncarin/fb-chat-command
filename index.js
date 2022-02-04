@@ -18,11 +18,15 @@ const selfListen = process.env.LISTEN_EVENT ? process.env.SELF_LISTEN : true;
 
 const commands = [];
 let options = {};
-var middlewares = [];
+const middlewares = [];
+const events = [];
+const eventMiddlewares = [];
 
-const addMiddleware = (...middleware) => {
-  middlewares.push(...middleware);
-};
+const addMiddleware = (...middleware) => middlewares.push(...middleware);
+
+const on = (event, listener, ...args) => events.push({ event, listener, args });
+const addEventMiddelware = (...middleware) =>
+  eventMiddlewares.push(...middleware);
 
 const add = (callback, option) => commands.push({ callback, option });
 const list = () =>
@@ -54,7 +58,29 @@ const init = (option = {}) => {
       fb.listen(async (err, event) => {
         if (err) return console.log(`${chalk.red("Error: ")}${err}`);
 
+        events.forEach((e) => {
+          const eventCallback = () => {
+            return async (event, fb, option) => {
+              return e.listener(event, fb, option);
+            };
+          };
+
+          const type = e.event;
+
+          if (event.type === type) {
+            pipeline([...eventMiddlewares, eventCallback], event, fb, {
+              ...e.args,
+            });
+          }
+        });
+
         commands.forEach((command) => {
+          const commandCallback = () => {
+            return async (matches, event, fb, option) => {
+              return command.callback(matches, event, fb, option);
+            };
+          };
+
           if (
             typeof command.callback === "function" &&
             event.body !== undefined
@@ -95,17 +121,18 @@ const init = (option = {}) => {
               (commandPrefix === prefix && matches.length !== 0) ||
               handleMatches
             ) {
-              const commandCallback = () => {
-                return async (matches, event, fb, option) => {
-                  return command.callback(matches, event, fb, option);
-                };
-              };
               pipeline([...middlewares, commandCallback], matches, event, fb, {
                 prefix: commandPrefix,
                 ...command.option,
                 commands: list(),
               });
             }
+          } else if (typeof command.callback === "function") {
+            pipeline([...middlewares, commandCallback], matches, event, fb, {
+              prefix: commandPrefix,
+              ...command.option,
+              commands: list(),
+            });
           }
         });
       });
@@ -125,4 +152,6 @@ module.exports = {
   init,
   list,
   addMiddleware,
+  addEventMiddelware,
+  on,
 };
