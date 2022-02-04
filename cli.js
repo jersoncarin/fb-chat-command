@@ -33,7 +33,7 @@ const password = process.env.FB_PASS;
 
     console.info(`${chalk.green("Info:")} Authenticating...`);
 
-    await page.waitForSelector("div[role=feed]", { timeout: 5000 });
+    await page.waitForSelector("div[role=feed]", { timeout: 8000 });
 
     cookies = await page.cookies();
     cookies = cookies.map(({ name: key, ...rest }) => ({ key, ...rest }));
