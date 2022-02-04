@@ -127,12 +127,6 @@ const init = (option = {}) => {
                 commands: list(),
               });
             }
-          } else if (typeof command.callback === "function") {
-            pipeline([...middlewares, commandCallback], matches, event, fb, {
-              prefix: commandPrefix,
-              ...command.option,
-              commands: list(),
-            });
           }
         });
       });
