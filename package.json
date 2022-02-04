@@ -1,6 +1,6 @@
 {
   "name": "fb-chat-command",
-  "version": "1.3.21",
+  "version": "1.3.22",
   "description": "Unofficial Facebook Chat API for user-account (not page).",
   "repository": {
     "type": "git",
